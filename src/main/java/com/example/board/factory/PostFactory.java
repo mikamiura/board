@@ -1,5 +1,6 @@
 //Post のインスタンスを生成する PostFactory
-
+//PostFactory は新規投稿、投稿の編集、投稿の削除といったパターンでの投稿のインスタンスを生成する
+//Factory Method というデザインパターンで設計されたクラス
 package com.example.board.factory;
 
 import java.util.Date;
