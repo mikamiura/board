@@ -1,0 +1,20 @@
+<!DOCTYPE HTML>
+
+<!--実行しているhtml-->
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="/css/normalize.css" th:href="@{/css/normalize.css}"><!--normalize.css読み込み-->
+		<link rel="stylesheet" href="/css/style.css" th:href="@{/css/style.css}"><!--style.css読み込み-->
+		<title>掲示板</title>
+	</head>
+	
+	<body>
+		<div id="wrap">
+			<header th:replace="common.html :: header"></header><!--ヘッダーフッターcommon.html読み込み-->
+			<main th:replace="main.html"></main><!--メインmain.html読み込み-->
+			<footer th:replace="common.html :: footer"></footer>
+		</div>
+	</body>
+</html>
