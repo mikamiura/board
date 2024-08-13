@@ -1,5 +1,6 @@
 //モデルの中身
 
+
 package com.example.board.repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.example.board.factory.PostFactory;
 
+
 /**
  * 掲示板のフロントコントローラー.
  */

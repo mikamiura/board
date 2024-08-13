@@ -1,4 +1,5 @@
 //掲示板の投稿データを格納する Post という Bean
+
 //エンティティ パラメーターを取得する場所
 
 package com.example.board.entity;
