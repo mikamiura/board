@@ -1,5 +1,6 @@
 package com.example.board.controller;
 
+
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import com.example.board.entity.Post;
 import com.example.board.factory.PostFactory;
 import com.example.board.repository.PostRepository;
+import com.example.board.validation.GroupOrder;
+
+
+////このコントローラー全体の役割は、投稿の作成・表示・編集・削除といった操作を管理し、それぞれの操作後に最新の投稿リストを表示すること
 
 /**
  * 掲示板のフロントコントローラー.
@@ -30,9 +35,9 @@ public class BoardController {
 	* @param model モデル
 	* @return テンプレート
 	*/
-	@GetMapping("/")
+	@GetMapping("/")////画面からGETメソッドで送られてきた場合の処理ができる
 	public String index(Model model) {
-		model.addAttribute("form", PostFactory.newPost());
+		model.addAttribute("form", PostFactory.newPost());//画面に渡したいデータをModelオブジェクトに追加.model.addAttribute("属性名", 渡したいデータ);
 		model = this.setList(model);
 		model.addAttribute("path", "create");
 		return "layout";
@@ -45,10 +50,10 @@ public class BoardController {
 	 * @param model モデル
 	 * @return テンプレート
 	*/
-	@PostMapping("/create") //create メソッドで新規投稿の処理を行う
-	public String create(@ModelAttribute("form") @Validated Post form, BindingResult result, Model model) {
-		if (result.hasErrors()) {//!が付いてる為エラーがでない場合を判定
-			model = this.setList(model);// エラーがない場合の処理、投稿の保存処理を記述
+	@PostMapping("/create") ////画面からPOSTメソッドで送られてきた場合の処理ができる
+	public String create(@ModelAttribute("form") @Validated(GroupOrder.class) Post form, BindingResult result, Model model) {////create メソッドで新規投稿の処理を行う
+		if (result.hasErrors()) {//エラーの場合を判定
+			model = this.setList(model);// エラーがある場合の処理、投稿の保存処理を記述
 			model.addAttribute("path", "create");
 			return "layout";
 		} else {
@@ -65,10 +70,10 @@ public class BoardController {
 	       * @return 一覧を設定したモデル
 	       */
 	//setListメソッドはAutowired アノテーションで PostRepositoryを注入してfindAllメソッドで投稿一覧を取得している
-	private Model setList(Model model) {
-		List<Post> list = repository.findAll();
-		model.addAttribute("list", list);
-		return model;
+	private Model setList(Model model) {////削除されていない投稿を、更新日時の新しい順に取得
+		List<Post> list = repository.findByDeletedFalseOrderByUpdatedDateDesc();
+		model.addAttribute("list", list);////取得した投稿リストをmodelに追加
+		return model;////更新されたmodelを返す
 	}
 
 	/**
@@ -80,7 +85,7 @@ public class BoardController {
 	 */
 	@GetMapping("/edit") //editメソッドは編集する投稿を PostRepository#findById メソッドで取り出す
 	public String edit(@ModelAttribute("form") Post form, Model model) {
-		Optional<Post> post = repository.findById(form.getId());
+		Optional<Post> post = repository.findById(form.getId());//form は投稿フォームのデータを持つオブジェクトgetId() は、そのフォームから投稿IDを取得するメソッド
 		model.addAttribute("form", post);
 		model = setList(model);
 		model.addAttribute("path", "update");
@@ -97,7 +102,7 @@ public class BoardController {
 	@PostMapping("/update") //updateメソッドは編集する投稿を PostRepository#findByIdメソッドで取り出す
 	//form に格納された投稿の値を PostFactory#updatePost メソッドで上書きしてから
 	//PostRepository#saveAndFlash メソッドを呼び出して保存
-	public String update(@ModelAttribute("form") @Validated Post form, BindingResult result, Model model) {
+	 public String update(@ModelAttribute("form") @Validated(GroupOrder.class) Post form, BindingResult result, Model model) {
 		Optional<Post> post = repository.findById(form.getId());
 		if (result.hasErrors()) {
 			model.addAttribute("form", form);
@@ -124,6 +129,7 @@ public class BoardController {
 	public String delete(@ModelAttribute("form") Post form, Model model) {
 		Optional<Post> post = repository.findById(form.getId());
 		repository.saveAndFlush(PostFactory.deletePost(post.get()));
+		//post.get() で実際の投稿オブジェクトを取得. PostFactory.deletedPost() で、その投稿を「削除済み」状態に変更
 		return "redirect:/";//最後に indexメソッドにリダイレクトして投稿一覧を表示
 	}
 }

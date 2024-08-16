@@ -24,8 +24,8 @@ import com.example.board.entity.Post;
      * @return 新規の投稿
      */
     public static Post newPost() {
-        Post post = new Post();
-        return post;
+        Post post = new Post();     ////PostクラスnewPostメソッドでpostオブジェクト生成.
+        return post;  ////生成したpostを返す
     }
 
     /**
@@ -34,13 +34,13 @@ import com.example.board.entity.Post;
      * @param post 投稿
      * @return 投稿
      */
-    public static Post createPost(Post post) {
-        String id = UUID.randomUUID().toString();
-        post.setId(id);
+    public static Post createPost(Post post) { //?投稿したもの
+        String id = UUID.randomUUID().toString();  ////文字列idにUUIDクラスのメソッドでユニークなidを作る
+        post.setId(id);         ////postのsetIdに上のidを格納
         Date current = new Date();
-        post.setCreatedDate(current);
+        post.setCreatedDate(current); ////?  currentオブジェクトをどうする？
         post.setUpdatedDate(current);
-        return post;
+        return post;           ////postに格納したものをPostクラスへ返す
     }
 
     /**
